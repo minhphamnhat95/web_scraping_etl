@@ -79,26 +79,33 @@ def run_queries(query_statement, sql_connection):
     return query_output
 
 
-### Executing the ETL ###
+    ### TEST CODE ###
 
+# Initiate the ETL Process #
 log_progress("Preliminaries complete. Initiating ETL process")
 
+# Extract Data #
 extracted_table = extract(url, table_attributes)
 log_progress('Data extraction complete. Initiating Transformation process')
 
+# Transform Data #
 transformed_table = transform(extracted_table, target_file)
 log_progress("Data transformation complete. Initiating Loading process")
 
+# Load Data to CSV File #
 load_to_csv(transformed_table, csv_path)
 log_progress('Data saved to CSV file')
 
+# Load CSV File to Database #
 load_to_db(transformed_table, sql_connection, 'Largest_banks')
 log_progress('Data loaded to Database as a table, Executing queries')
 
+# Run Queries on the Database #
 print(run_queries("Select * FROM Largest_banks", sql_connection))
 print(run_queries("SELECT AVG(MC_GBP_Billion) FROM Largest_banks", sql_connection))
 print(run_queries("SELECT Name from Largest_banks LIMIT 5", sql_connection))
 log_progress('Process Complete')
 
+# Close Database Connection #
 sql_connection.close()
 log_progress('Server Connection closed')
